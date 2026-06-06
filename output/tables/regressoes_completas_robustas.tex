@@ -1,0 +1,63 @@
+\begin{table}
+\centering
+\caption{Saida completa das regressoes usadas no relatorio}
+\centering
+\begin{tabular}[t]{lccc}
+\toprule
+  & Modelo 1: nivel & Modelo 2: log & Modelo 3: ampliado\\
+\midrule
+(Intercept) & 70056.0825*** & 11.1368*** & 9.3041***\\
+ & (111.5510) & (0.0016) & (0.0187)\\
+TV & 242.4441*** & 0.0029*** & 0.0069***\\
+ & (40.0205) & (0.0006) & (0.0005)\\
+cigarro & -8.3504 &  & \\
+ & (13.1945) &  & \\
+log\_cigarro &  & -0.0038** & -0.0199***\\
+ &  & (0.0011) & (0.0010)\\
+refrigerante &  &  & 0.0011***\\
+ &  &  & \vphantom{2} (0.0001)\\
+idade\_c &  &  & 0.0026***\\
+ &  &  & \vphantom{1} (0.0001)\\
+idade\_c2 &  &  & -0.0001***\\
+ &  &  & (0.0000)\\
+altura\_cm &  &  & 0.0112***\\
+ &  &  & (0.0001)\\
+sexoMulher &  &  & 0.0034+\\
+ &  &  & (0.0020)\\
+cor\_racaBranca &  &  & 0.0018\\
+ &  &  & (0.0017)\\
+cor\_racaPreta &  &  & 0.0089**\\
+ &  &  & (0.0028)\\
+cor\_racaAmarela &  &  & -0.0270***\\
+ &  &  & (0.0080)\\
+cor\_racaIndigena &  &  & 0.0065\\
+ &  &  & (0.0088)\\
+alfabetizadoSim &  &  & 0.0194***\\
+ &  &  & \vphantom{1} (0.0029)\\
+estado\_civilDivorciado &  &  & -0.0085*\\
+ &  &  & (0.0034)\\
+estado\_civilSeparado &  &  & -0.0123**\\
+ &  &  & (0.0047)\\
+estado\_civilSolteiro &  &  & -0.0170***\\
+ &  &  & (0.0018)\\
+estado\_civilViuvo &  &  & 0.0064+\\
+ &  &  & (0.0033)\\
+regiaoNordeste &  &  & -0.0006\\
+ &  &  & (0.0021)\\
+regiaoSudeste &  &  & 0.0057*\\
+ &  &  & (0.0024)\\
+regiaoSul &  &  & 0.0191***\\
+ &  &  & (0.0029)\\
+regiaoCentro-Oeste &  &  & 0.0111***\\
+ &  &  & (0.0027)\\
+tamanho\_dom &  &  & 0.0016**\\
+ &  &  & (0.0005)\\
+\midrule
+N & 56794 & 56794 & 56794\\
+R2 & 0.001 & 0.001 & 0.302\\
+R2 ajustado & 0.001 & 0.001 & 0.302\\
+\bottomrule
+\multicolumn{4}{l}{\rule{0pt}{1em}+ p $<$ 0.1, * p $<$ 0.05, ** p $<$ 0.01, *** p $<$ 0.001}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}Erros-padrao robustos HC1 entre parenteses.}\\
+\end{tabular}
+\end{table}

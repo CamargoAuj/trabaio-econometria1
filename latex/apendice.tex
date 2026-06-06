@@ -1,0 +1,20 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry,booktabs,graphicx,caption,float,longtable,xcolor}
+\geometry{margin=1.7cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\newcommand{\inputtable}[1]{\IfFileExists{output/tables/#1}{\input{output/tables/#1}}{\input{../output/tables/#1}}}
+\begin{document}
+\begin{center}\textbf{Apendice: saidas do R usadas no relatorio}\end{center}
+\inputtable{variaveis_usadas.tex}
+\inputtable{auditoria_limpeza.tex}
+\inputtable{descritivas_status_fumante.tex}
+\inputtable{regressoes_completas_robustas.tex}
+\inputtable{heterocedasticidade.tex}
+\inputtable{vif.tex}
+\inputtable{influencia_cook.tex}
+\inputtable{normalidade.tex}
+\end{document}

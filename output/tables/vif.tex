@@ -1,0 +1,42 @@
+\begin{table}
+\centering
+\caption{\label{tab:vif}Fatores de inflacao da variancia}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\fontsize{8}{10}\selectfont
+\begin{tabular}[t]{lll}
+\toprule
+Modelo & Termo & VIF\\
+\midrule
+Modelo 1: nivel & TV & 1,00\\
+Modelo 1: nivel & cigarro & 1,00\\
+Modelo 2: log & TV & 1,00\\
+Modelo 2: log & log\_cigarro & 1,00\\
+Modelo 3: ampliado & TV & 1,03\\
+\addlinespace
+Modelo 3: ampliado & log\_cigarro & 1,05\\
+Modelo 3: ampliado & refrigerante & 1,14\\
+Modelo 3: ampliado & idade\_c & 2,03\\
+Modelo 3: ampliado & idade\_c2 & 1,41\\
+Modelo 3: ampliado & altura\_cm & 2,05\\
+\addlinespace
+Modelo 3: ampliado & sexoMulher & 1,88\\
+Modelo 3: ampliado & cor\_racaBranca & 1,30\\
+Modelo 3: ampliado & cor\_racaPreta & 1,09\\
+Modelo 3: ampliado & cor\_racaAmarela & 1,01\\
+Modelo 3: ampliado & cor\_racaIndigena & 1,01\\
+\addlinespace
+Modelo 3: ampliado & alfabetizadoSim & 1,15\\
+Modelo 3: ampliado & estado\_civilDivorciado & 1,10\\
+Modelo 3: ampliado & estado\_civilSeparado & 1,05\\
+Modelo 3: ampliado & estado\_civilSolteiro & 1,44\\
+Modelo 3: ampliado & estado\_civilViuvo & 1,41\\
+\addlinespace
+Modelo 3: ampliado & regiaoNordeste & 1,78\\
+Modelo 3: ampliado & regiaoSudeste & 1,86\\
+Modelo 3: ampliado & regiaoSul & 1,67\\
+Modelo 3: ampliado & regiaoCentro-Oeste & 1,48\\
+Modelo 3: ampliado & tamanho\_dom & 1,15\\
+\bottomrule
+\end{tabular}}
+\end{table}

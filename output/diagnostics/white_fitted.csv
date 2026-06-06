@@ -1,0 +1,4 @@
+modelo,teste,estatistica,gl,p_valor
+Modelo 1: nivel,White (ajustado e ajustado^2),85.54259938400799,2,2.6586462771415804e-19
+Modelo 2: log,White (ajustado e ajustado^2),61.71318830181273,2,3.973300664884594e-14
+Modelo 3: ampliado,White (ajustado e ajustado^2),144.6784728943067,2,3.832381948907826e-32

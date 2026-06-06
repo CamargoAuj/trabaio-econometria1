@@ -1,0 +1,34 @@
+\begin{table}
+\centering
+\caption{\label{tab:variaveis}Variaveis procuradas, disponibilidade e tratamento}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\fontsize{8}{10}\selectfont
+\begin{tabular}[t]{llll}
+\toprule
+Item & Codigo & Status & Tratamento\\
+\midrule
+Peso medido & w00103 & Disponivel e usada & kg validos em 30--200; peso\_gramas=w00103*1000; log\_peso=log(peso\_gramas)\\
+TV & p045 & Disponivel e usada & faixas recodificadas em horas: 0, 0,5, 1,5, ..., 6,5\\
+Cigarros por dia & p05402 & Disponivel e usada & p05402 valido para fumantes; nao fumantes recebem zero\\
+Status de fumante & p050 & Disponivel e usada & 1 diario, 2 ocasional, 3 nao fumante\\
+Refrigerante & p020+p022 & Disponivel e usada & p020 dias/semana * p022 copos/dia; categoria 3 tratada como 3+ no limite inferior\\
+\addlinespace
+Altura & w00203 & Disponivel e usada & cm validos em 120--210\\
+Idade & c008 & Disponivel e usada & adultos 18--109\\
+Sexo & c006 & Disponivel e usada & fator Homem/Mulher\\
+Cor/raca & c009 & Disponivel e usada & fator; codigo 9 ignorado removido\\
+Estado civil & c011 & Disponivel e usada & fator com cinco categorias\\
+\addlinespace
+Alfabetizacao & d001 & Disponivel e usada & proxy educacional binaria: sabe ler/escrever\\
+Regiao & v0001 & Disponivel e usada & UF agregada em cinco regioes\\
+Tamanho do domicilio & v0022 & Disponivel e usada & controle para composicao domiciliar\\
+Escolaridade detalhada & NA & Nao disponivel no .dta recebido & o recorte da base nao contem VDD004 nem anos de estudo\\
+Renda & NA & Nao disponivel no .dta recebido & o recorte da base nao contem renda\\
+\addlinespace
+Atividade fisica & NA & Nao disponivel no .dta recebido & o recorte da base nao contem P034/P035 ou medidas equivalentes\\
+Alcool & NA & Nao disponivel no .dta recebido & o recorte da base nao contem P027/P028\\
+Estado de saude & NA & Nao disponivel no .dta recebido & o recorte da base nao contem N001 ou medida equivalente\\
+\bottomrule
+\end{tabular}}
+\end{table}

@@ -1,0 +1,20 @@
+\begin{table}
+\centering
+\caption{\label{tab:hetero}Testes de heterocedasticidade}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\fontsize{8}{10}\selectfont
+\begin{tabular}[t]{lllrll}
+\toprule
+Modelo & Teste & Estatistica & GL & p-valor & Decisao 5\%\\
+\midrule
+Modelo 1: nivel & Breusch-Pagan & 75,116 & 2 & <0,001 & Rejeita homoced.\\
+Modelo 2: log & Breusch-Pagan & 51,800 & 2 & <0,001 & Rejeita homoced.\\
+Modelo 3: ampliado & Breusch-Pagan & 747,199 & 21 & <0,001 & Rejeita homoced.\\
+Modelo 1: nivel & White (ajustado e ajustado\textasciicircum{}2) & 85,543 & 2 & <0,001 & Rejeita homoced.\\
+Modelo 2: log & White (ajustado e ajustado\textasciicircum{}2) & 61,713 & 2 & <0,001 & Rejeita homoced.\\
+\addlinespace
+Modelo 3: ampliado & White (ajustado e ajustado\textasciicircum{}2) & 144,678 & 2 & <0,001 & Rejeita homoced.\\
+\bottomrule
+\end{tabular}}
+\end{table}

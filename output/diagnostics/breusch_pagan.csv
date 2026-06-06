@@ -1,0 +1,4 @@
+modelo,teste,estatistica,gl,p_valor
+Modelo 1: nivel,Breusch-Pagan,75.11624606518997,2,4.883311365750841e-17
+Modelo 2: log,Breusch-Pagan,51.80017069199697,2,5.645934733174877e-12
+Modelo 3: ampliado,Breusch-Pagan,747.199402856145,21,1.3880075143773804e-144

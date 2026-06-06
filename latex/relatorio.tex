@@ -1,0 +1,22 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry,booktabs,graphicx,caption,float,xcolor}
+\geometry{margin=1.25cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt}
+\captionsetup{font=small,labelfont=bf}
+\newcommand{\inputtable}[1]{\IfFileExists{output/tables/#1}{\input{output/tables/#1}}{\input{../output/tables/#1}}}
+\begin{document}
+\small
+\begin{center}\textbf{Maus habitos e peso na PNS 2013}\end{center}
+\textbf{Objetivo e dados.} O objetivo e verificar se horas de TV, cigarros por dia e consumo de refrigerante se associam ao peso dos individuos na PNS 2013. Usei o peso final medido (w00103), convertido em \textit{peso\_gramas}; TV (p045) foi recodificada pelo ponto medio das faixas; cigarro combina p050 e p05402, com zero para nao fumantes; refrigerante e p020$\times$p022, em copos por semana. A limpeza removeu codigos nao aplicaveis/ignorados e valores fora dos intervalos do dicionario, chegando a 56.794 observacoes na amostra comum.
+\textbf{Descritivas.} A Tabela \ref{tab:descritivas} mostra que nao fumantes pesam em media 70,7 kg, contra 69,8 kg entre fumantes diarios e 69,4 kg entre ocasionais. Fumantes diarios assistem em media 2,65 horas de TV e fumam 13,51 cigarros/dia; nos nao fumantes, a variavel cigarro e mecanicamente zero. Essas diferencas brutas misturam habitos, composicao demografica e altura, por isso as regressoes abaixo controlam parcialmente esses fatores.
+\inputtable{descritivas_status_fumante.tex}
+\textbf{Especificacao.} Estimei MQO para: (1) $peso\_gramas_i=\beta_0+\beta_1TV_i+\beta_2cigarro_i+u_i$; (2) $\log(peso_i)=\alpha_0+\alpha_1TV_i+\alpha_2\log(cigarro_i+1)+e_i$; e (3) o modelo log ampliado com refrigerante, idade centrada, idade centrada ao quadrado, altura, sexo, cor/raca, alfabetizacao, estado civil, regiao e tamanho do domicilio. Esses controles reduzem vies por caracteristicas correlacionadas simultaneamente com peso e habitos.
+\inputtable{regressoes_principais.tex}
+\textbf{Resultados.} No modelo em nivel, uma hora adicional de TV esta associada a 242 gramas no peso, mantido cigarro constante (p<0,001), enquanto um cigarro/dia adicional se associa a -8 gramas (p=0,527). O ajuste e baixo (R$^2$=0,001), logo maus habitos isolados explicam pouco da variacao individual do peso. No modelo log, TV implica aproximadamente 0,29\% no peso por hora (p<0,001) e $\log(cigarro+1)$ tem coeficiente -0,0038 (p=0,001). Com controles, TV passa a 0,69\% (p<0,001), $\log(cigarro+1)$ a -0,0199 (p<0,001) e refrigerante a 0,113\% por copo/semana (p<0,001). O R$^2$ ajustado sobe de 0,001 para 0,302, principalmente pela inclusao de altura e demografia.
+\textbf{Diagnosticos.} Os graficos de residuos versus ajustados e as distancias de Cook foram gerados em \texttt{output/diagnostics}. O maior VIF do modelo ampliado foi 2,05, sem sinal forte de multicolinearidade severa. Breusch--Pagan rejeitou homocedasticidade em pelo menos um modelo (menor p<0,001; White: menor p<0,001), por isso a inferencia reportada usa erros-padrao robustos HC1. Heterocedasticidade afeta erros-padrao e testes t/F, mas nao torna MQO viesado se houver exogeneidade condicional.
+\textbf{Conclusao.} Os resultados indicam associacoes condicionais pequenas entre maus habitos e peso, nao efeitos causais fortes. O modelo ampliado sugere que parte da correlacao simples era composicional. As principais limitacoes sao o desenho transversal, possiveis variaveis omitidas, aproximacoes em categorias de TV/refrigerante, ausencia de pesos amostrais no recorte recebido e medida de cigarro restrita a cigarros industrializados por dia.
+\end{document}

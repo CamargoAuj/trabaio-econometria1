@@ -1,0 +1,9 @@
+R_libs/
+.Rhistory
+.RData
+.Rproj.user/
+*.log
+*.aux
+*.out
+*.toc
+*.synctex.gz

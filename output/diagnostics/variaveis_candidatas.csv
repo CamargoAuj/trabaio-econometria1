@@ -1,0 +1,22 @@
+codigo,presente,label
+w00103,TRUE,Peso - Final (kg)
+w00203,TRUE,Altura - Final (cm)
+p045,TRUE,quantas horas por dia assiste TV
+p050,TRUE,fuma produto do tabaco
+p05402,TRUE,número de cigarros industrializados por dias
+p020,TRUE,quantos dias da semana toma refrigerante ou suco artificial
+p022,TRUE,copos de refrigerante ou suco artifical toma por dia
+c008,TRUE,idade
+c006,TRUE,sexo
+c009,TRUE,cor ou raça
+c011,TRUE,estado civil
+d001,TRUE,sabe ler e escrever
+v0001,TRUE,unidade da federação
+v0022,TRUE,total de moradores
+vdd004,FALSE,NA
+e01602,FALSE,NA
+p034,FALSE,NA
+p035,FALSE,NA
+p027,FALSE,NA
+p028,FALSE,NA
+n001,FALSE,NA

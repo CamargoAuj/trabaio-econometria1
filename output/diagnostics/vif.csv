@@ -1,0 +1,26 @@
+modelo,termo,vif
+Modelo 1: nivel,TV,1.0040100919578878
+Modelo 1: nivel,cigarro,1.0040100919578874
+Modelo 2: log,TV,1.0040332318834015
+Modelo 2: log,log_cigarro,1.004033231883402
+Modelo 3: ampliado,TV,1.0346730585776167
+Modelo 3: ampliado,log_cigarro,1.0471186981857339
+Modelo 3: ampliado,refrigerante,1.1351472720895177
+Modelo 3: ampliado,idade_c,2.026442714079002
+Modelo 3: ampliado,idade_c2,1.4136937841626955
+Modelo 3: ampliado,altura_cm,2.0515250336497526
+Modelo 3: ampliado,sexoMulher,1.8756625534820348
+Modelo 3: ampliado,cor_racaBranca,1.2990906279136343
+Modelo 3: ampliado,cor_racaPreta,1.0923621932319187
+Modelo 3: ampliado,cor_racaAmarela,1.0115960897183072
+Modelo 3: ampliado,cor_racaIndigena,1.0094755445850985
+Modelo 3: ampliado,alfabetizadoSim,1.151538618653049
+Modelo 3: ampliado,estado_civilDivorciado,1.1021970748169574
+Modelo 3: ampliado,estado_civilSeparado,1.053856848689936
+Modelo 3: ampliado,estado_civilSolteiro,1.4411890944467658
+Modelo 3: ampliado,estado_civilViuvo,1.4126583574502531
+Modelo 3: ampliado,regiaoNordeste,1.7810921798462371
+Modelo 3: ampliado,regiaoSudeste,1.8625844226104473
+Modelo 3: ampliado,regiaoSul,1.670534803938629
+Modelo 3: ampliado,regiaoCentro-Oeste,1.4812866866013363
+Modelo 3: ampliado,tamanho_dom,1.145188034035244
