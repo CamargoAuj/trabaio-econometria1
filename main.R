@@ -74,8 +74,12 @@ write_latex_documents(
   out_dir = paths$latex
 )
 
+compile_latex_documents(paths$latex)
+
 message("Projeto executado com sucesso.")
-message("Relatorio principal: ", normalizePath(file.path(paths$latex, "relatorio.tex")))
-message("Apendice: ", normalizePath(file.path(paths$latex, "apendice.tex")))
+message("Relatório final: ", normalizePath(file.path(paths$latex, "relatorio_final.tex")))
+message("PDF final: ", normalizePath(file.path(paths$latex, "relatorio_final.pdf"), mustWork = FALSE))
+message("Apêndice: ", normalizePath(file.path(paths$latex, "apendice_outputs_R.tex")))
+message("PDF do apêndice: ", normalizePath(file.path(paths$latex, "apendice_outputs_R.pdf"), mustWork = FALSE))
 message("Tabelas: ", normalizePath(paths$tables))
-message("Diagnosticos: ", normalizePath(paths$diagnostics))
+message("Diagnósticos: ", normalizePath(paths$diagnostics))

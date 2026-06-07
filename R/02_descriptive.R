@@ -4,7 +4,8 @@ make_descriptives <- function(data) {
       status_fumante,
       `Peso (gramas)` = peso_gramas,
       `TV (horas/dia)` = TV,
-      `Cigarros/dia` = cigarro
+      `Cigarros/dia` = cigarro,
+      `Refrigerante (copos/semana)` = refrigerante
     ) |>
     tidyr::pivot_longer(
       cols = -status_fumante,

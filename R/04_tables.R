@@ -14,7 +14,8 @@ fmt_p <- function(x) {
 
 p_inline <- function(x) {
   p <- fmt_p(x)
-  ifelse(grepl("^<", p), paste0("p", p), paste0("p=", p))
+  p_math <- gsub(",", "{,}", p, fixed = TRUE)
+  ifelse(grepl("^<", p), paste0("$p", p_math, "$"), paste0("$p=", p_math, "$"))
 }
 
 write_kable_latex <- function(df, path, caption = NULL, label = NULL, digits = 3) {
@@ -38,6 +39,7 @@ write_kable_latex <- function(df, path, caption = NULL, label = NULL, digits = 3
 
 write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostics, out_dir = file.path("output", "tables")) {
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+  unlink(file.path(out_dir, "normalidade.tex"), force = TRUE)
   old_options <- options(
     modelsummary_format_numeric_latex = "plain",
     modelsummary_factory_latex = "kableExtra"
@@ -54,11 +56,11 @@ write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostic
     ) |>
     dplyr::rename(
       `Status de fumante` = status_fumante,
-      Variavel = variavel,
-      Media = media,
-      `Desvio-padrao` = desvio_padrao,
-      Minimo = minimo,
-      Maximo = maximo,
+      Variável = variavel,
+      Média = media,
+      `Desvio-padrão` = desvio_padrao,
+      Mínimo = minimo,
+      Máximo = maximo,
       N = n
     )
 
@@ -66,7 +68,7 @@ write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostic
   write_kable_latex(
     desc_table,
     desc_path,
-    caption = "Estatisticas descritivas por status de fumante",
+    caption = "Estatísticas descritivas por status de fumante",
     label = "descritivas",
     digits = 2
   )
@@ -138,10 +140,10 @@ write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostic
     statistic = "({std.error})",
     fmt = 3,
     output = main_reg_path,
-    title = "Regressoes MQO com erros-padrao robustos HC1",
+    title = "Regressões MQO com erros-padrão robustos HC1",
     notes = c(
-      "Erros-padrao robustos HC1 entre parenteses.",
-      "O modelo 3 tambem inclui cor/raca, alfabetizacao, estado civil, regiao e tamanho do domicilio."
+      "Erros-padrão robustos HC1 entre parênteses.",
+      "O modelo 3 também inclui cor/raça, alfabetização, estado civil, região e tamanho do domicílio."
     )
   )
 
@@ -154,23 +156,23 @@ write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostic
     statistic = "({std.error})",
     fmt = 4,
     output = full_reg_path,
-    title = "Saida completa das regressoes usadas no relatorio",
-    notes = "Erros-padrao robustos HC1 entre parenteses."
+    title = "Saída completa das regressões usadas no relatório",
+    notes = "Erros-padrão robustos HC1 entre parênteses."
   )
 
   hetero <- dplyr::bind_rows(diagnostics$bp, diagnostics$white) |>
     dplyr::mutate(
-      decisao_5 = dplyr::if_else(p_valor < 0.05, "Rejeita homoced.", "Nao rejeita"),
+      decisao_5 = dplyr::if_else(p_valor < 0.05, "Rejeita homoced.", "Não rejeita"),
       estatistica = fmt_num(estatistica, 3),
       p_valor = fmt_p(p_valor)
     ) |>
     dplyr::rename(
       Modelo = modelo,
       Teste = teste,
-      Estatistica = estatistica,
+      Estatística = estatistica,
       GL = gl,
       `p-valor` = p_valor,
-      `Decisao 5%` = decisao_5
+      `Decisão 5%` = decisao_5
     )
 
   hetero_path <- file.path(out_dir, "heterocedasticidade.tex")
@@ -190,7 +192,7 @@ write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostic
   write_kable_latex(
     vif_table,
     vif_path,
-    caption = "Fatores de inflacao da variancia",
+    caption = "Fatores de inflação da variância",
     label = "vif",
     digits = 2
   )
@@ -207,7 +209,7 @@ write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostic
       Modelo = modelo,
       N = n,
       `Limite 4/N` = limite_4_n,
-      `Cook max.` = max_cook,
+      `Cook máx.` = max_cook,
       `Cook p99` = p99_cook,
       `N acima 4/N` = n_acima_4_n
     )
@@ -216,7 +218,7 @@ write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostic
   write_kable_latex(
     influence_table,
     influence_path,
-    caption = "Resumo de influencia por distancia de Cook",
+    caption = "Resumo de influência por distância de Cook",
     label = "cook",
     digits = 4
   )
@@ -242,7 +244,7 @@ write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostic
   write_kable_latex(
     normality_table,
     normality_path,
-    caption = "Diagnostico secundario de normalidade dos residuos",
+    caption = "Diagnóstico secundário de normalidade dos resíduos",
     label = "normalidade",
     digits = 3
   )
@@ -282,10 +284,22 @@ write_latex_documents <- function(cleaned, metadata, descriptives, models, diagn
     status[[col]][match(status_name, status$status_fumante)]
   }
 
-  m1_tv <- coef_lookup(models, "Modelo 1: nivel", "TV")
-  m1_cig <- coef_lookup(models, "Modelo 1: nivel", "cigarro")
+  m1_tv <- coef_lookup(models, "Modelo 1: nível", "TV")
+  m1_cig <- coef_lookup(models, "Modelo 1: nível", "cigarro")
+  m1_ref <- coef_lookup(models, "Modelo 1: nível", "refrigerante")
   m2_tv <- coef_lookup(models, "Modelo 2: log", "TV")
   m2_cig <- coef_lookup(models, "Modelo 2: log", "log_cigarro")
+  m2_ref <- coef_lookup(models, "Modelo 2: log", "refrigerante")
+  m2_max_p <- max(m2_tv$p, m2_cig$p, m2_ref$p, na.rm = TRUE)
+  m1_cig_sig <- if (is.na(m1_cig$p)) {
+    ""
+  } else if (m1_cig$p < 0.05) {
+    "estatisticamente diferente de zero a 5%"
+  } else if (m1_cig$p < 0.10) {
+    "evidência apenas marginal a 10%"
+  } else {
+    "sem significância estatística a 10%"
+  }
   m3_tv <- coef_lookup(models, "Modelo 3: ampliado", "TV")
   m3_cig <- coef_lookup(models, "Modelo 3: ampliado", "log_cigarro")
   m3_ref <- coef_lookup(models, "Modelo 3: ampliado", "refrigerante")
@@ -296,6 +310,7 @@ write_latex_documents <- function(cleaned, metadata, descriptives, models, diagn
 
   bp_min <- min(diagnostics$bp$p_valor, na.rm = TRUE)
   white_min <- min(diagnostics$white$p_valor, na.rm = TRUE)
+  normality_min <- min(diagnostics$normality$p_valor, na.rm = TRUE)
   max_vif_m3 <- diagnostics$vif |>
     dplyr::filter(modelo == "Modelo 3: ampliado") |>
     dplyr::summarise(max_vif = max(vif, na.rm = TRUE)) |>
@@ -314,58 +329,63 @@ write_latex_documents <- function(cleaned, metadata, descriptives, models, diagn
     "\\newcommand{\\inputtable}[1]{\\IfFileExists{output/tables/#1}{\\input{output/tables/#1}}{\\input{../output/tables/#1}}}",
     "\\begin{document}",
     "\\small",
-    "\\begin{center}\\textbf{Maus habitos e peso na PNS 2013}\\end{center}",
+    "\\begin{center}\\textbf{Maus hábitos e peso corporal na PNS 2013}\\end{center}",
     paste0(
-      "\\textbf{Objetivo e dados.} O objetivo e verificar se horas de TV, cigarros por dia e consumo de refrigerante se associam ao peso dos individuos na PNS 2013. ",
-      "Usei o peso final medido (w00103), convertido em \\textit{peso\\_gramas}; TV (p045) foi recodificada pelo ponto medio das faixas; ",
-      "cigarro combina p050 e p05402, com zero para nao fumantes; refrigerante e p020$\\times$p022, em copos por semana. ",
-      "A limpeza removeu codigos nao aplicaveis/ignorados e valores fora dos intervalos do dicionario, chegando a ",
-      format(nrow(cleaned$data), big.mark = ".", decimal.mark = ","), " observacoes na amostra comum."
+      "\\textbf{Introdução.} Este relatório avalia se três hábitos de risco -- assistir televisão, fumar cigarros e consumir refrigerante ou suco artificial -- estão associados ao peso dos indivíduos na PNS 2013/IBGE. ",
+      "A pergunta é descritiva e econométrica, não causal: os coeficientes abaixo devem ser lidos como correlações parciais condicionais às variáveis observadas."
     ),
     paste0(
-      "\\textbf{Descritivas.} A Tabela \\ref{tab:descritivas} mostra que nao fumantes pesam em media ",
-      fmt_num(status_value("Nao fumante", "peso_medio_kg"), 1), " kg, contra ",
-      fmt_num(status_value("Fumante diario", "peso_medio_kg"), 1), " kg entre fumantes diarios e ",
+      "\\textbf{Dados e tratamento.} A base recebida contém ", format(nrow(models$data), big.mark = ".", decimal.mark = ","),
+      " observações válidas após a limpeza comum. O peso final medido (w00103) foi convertido em gramas; TV (p045) foi transformada nos pontos médios das faixas; ",
+      "cigarros/dia combina status de fumante (p050) e quantidade diária (p05402), com zero para não fumantes; refrigerante é p020$\\times$p022, em copos por semana. ",
+      "Códigos não aplicáveis, ignorados e valores fora dos intervalos do dicionário foram tratados como ausentes. ",
+      "Como renda, atividade física, álcool, estado de saúde e escolaridade detalhada não aparecem no recorte .dta, o modelo ampliado usa idade, sexo, altura, cor/raça, alfabetização, estado civil, região e tamanho do domicílio."
+    ),
+    paste0(
+      "\\textbf{Descritivas.} A Tabela \\ref{tab:descritivas} sugere diferenças brutas pequenas no peso: não fumantes pesam em média ",
+      fmt_num(status_value("Não fumante", "peso_medio_kg"), 1), " kg, contra ",
+      fmt_num(status_value("Fumante diário", "peso_medio_kg"), 1), " kg entre fumantes diários e ",
       fmt_num(status_value("Fumante ocasional", "peso_medio_kg"), 1), " kg entre ocasionais. ",
-      "Fumantes diarios assistem em media ", fmt_num(status_value("Fumante diario", "tv_media"), 2),
-      " horas de TV e fumam ", fmt_num(status_value("Fumante diario", "cigarro_medio"), 2),
-      " cigarros/dia; nos nao fumantes, a variavel cigarro e mecanicamente zero. ",
-      "Essas diferencas brutas misturam habitos, composicao demografica e altura, por isso as regressoes abaixo controlam parcialmente esses fatores."
+      "Fumantes diários assistem mais TV (", fmt_num(status_value("Fumante diário", "tv_media"), 2),
+      " h/dia) e fumam ", fmt_num(status_value("Fumante diário", "cigarro_medio"), 2),
+      " cigarros/dia; os não fumantes têm cigarro igual a zero por construção. ",
+      "Essas médias ainda misturam hábitos, idade, altura e composição demográfica."
     ),
     "\\inputtable{descritivas_status_fumante.tex}",
     paste0(
-      "\\textbf{Especificacao.} Estimei MQO para: (1) $peso\\_gramas_i=\\beta_0+\\beta_1TV_i+\\beta_2cigarro_i+u_i$; ",
-      "(2) $\\log(peso_i)=\\alpha_0+\\alpha_1TV_i+\\alpha_2\\log(cigarro_i+1)+e_i$; ",
-      "e (3) o modelo log ampliado com refrigerante, idade centrada, idade centrada ao quadrado, altura, sexo, cor/raca, alfabetizacao, estado civil, regiao e tamanho do domicilio. ",
-      "Esses controles reduzem vies por caracteristicas correlacionadas simultaneamente com peso e habitos."
+      "\\textbf{Estratégia empírica.} Em MQO múltiplo, cada coeficiente estimado é interpretado como variação parcial em $E(peso\\mid X)$, mantidas constantes as demais variáveis observadas. ",
+      "Estimo três especificações: um modelo em nível com os três hábitos; uma versão log com $\\log(peso)$ e $\\log(1+cigarro)$, adequada porque muitos indivíduos não fumam; ",
+      "e um modelo log ampliado com controles. Esses controles reduzem viés de variável omitida observável porque peso e hábitos variam sistematicamente com ciclo de vida, sexo, altura, composição familiar e localização."
     ),
     "\\inputtable{regressoes_principais.tex}",
     paste0(
-      "\\textbf{Resultados.} No modelo em nivel, uma hora adicional de TV esta associada a ",
-      fmt_num(m1_tv$estimate, 0), " gramas no peso, mantido cigarro constante (", p_inline(m1_tv$p), "), enquanto um cigarro/dia adicional se associa a ",
-      fmt_num(m1_cig$estimate, 0), " gramas (", p_inline(m1_cig$p), "). O ajuste e baixo (R$^2$=",
-      fmt_num(g1$r2, 3), "), logo maus habitos isolados explicam pouco da variacao individual do peso. ",
-      "No modelo log, TV implica aproximadamente ", fmt_num(100 * m2_tv$estimate, 2),
-      "\\% no peso por hora (", p_inline(m2_tv$p), ") e $\\log(cigarro+1)$ tem coeficiente ",
-      fmt_num(m2_cig$estimate, 4), " (", p_inline(m2_cig$p), "). ",
-      "Com controles, TV passa a ", fmt_num(100 * m3_tv$estimate, 2), "\\% (", p_inline(m3_tv$p),
-      "), $\\log(cigarro+1)$ a ", fmt_num(m3_cig$estimate, 4), " (", p_inline(m3_cig$p),
-      ") e refrigerante a ", fmt_num(100 * m3_ref$estimate, 3), "\\% por copo/semana (", p_inline(m3_ref$p),
+      "\\textbf{Resultados.} No modelo em nível, uma hora adicional de TV está associada a ",
+      fmt_num(m1_tv$estimate, 0), " g no peso (", p_inline(m1_tv$p), "); um cigarro/dia adicional a ",
+      fmt_num(m1_cig$estimate, 0), " g (", p_inline(m1_cig$p), ", ", m1_cig_sig, "); e um copo semanal adicional de refrigerante a ",
+      fmt_num(m1_ref$estimate, 0), " g (", p_inline(m1_ref$p), "). O ajuste permanece muito baixo (R$^2$=",
+      fmt_num(g1$r2, 3), "), indicando que hábitos isolados explicam fração pequena da heterogeneidade de peso; a precisão estatística não implica grande relevância econômica. ",
+      "No modelo log, os coeficientes de TV e refrigerante são semielasticidades: TV implica cerca de ", fmt_num(100 * (exp(m2_tv$estimate) - 1), 2),
+      "\\% no peso por hora; $\\log(1+cigarro)$ tem coeficiente ", fmt_num(m2_cig$estimate, 4),
+      ", uma elasticidade em relação a $1+cigarro$; e refrigerante ", fmt_num(100 * (exp(m2_ref$estimate) - 1), 3), "\\% por copo/semana; os três coeficientes têm ", p_inline(m2_max_p), ". ",
+      "Com controles, TV fica em ", fmt_num(100 * (exp(m3_tv$estimate) - 1), 2), "\\% por hora (", p_inline(m3_tv$p),
+      "), $\\log(1+cigarro)$ em ", fmt_num(m3_cig$estimate, 4), " (", p_inline(m3_cig$p),
+      ") e refrigerante em ", fmt_num(100 * (exp(m3_ref$estimate) - 1), 3), "\\% por copo/semana (", p_inline(m3_ref$p),
       "). O R$^2$ ajustado sobe de ", fmt_num(g2$adj, 3), " para ", fmt_num(g3$adj, 3),
-      ", principalmente pela inclusao de altura e demografia."
+      ", evidência de que altura e controles demográficos absorvem parte relevante da variação de peso."
     ),
     paste0(
-      "\\textbf{Diagnosticos.} Os graficos de residuos versus ajustados e as distancias de Cook foram gerados em \\texttt{output/diagnostics}. ",
-      "O maior VIF do modelo ampliado foi ", fmt_num(max_vif_m3, 2), ", sem sinal forte de multicolinearidade severa. ",
-      "Breusch--Pagan rejeitou homocedasticidade em pelo menos um modelo (menor ", p_inline(bp_min),
-      "; White: menor ", p_inline(white_min), "), por isso a inferencia reportada usa erros-padrao robustos HC1. ",
-      "Heterocedasticidade afeta erros-padrao e testes t/F, mas nao torna MQO viesado se houver exogeneidade condicional."
+      "\\textbf{Diagnóstico.} Breusch--Pagan e White rejeitam a hipótese nula de homocedasticidade (menores ", p_inline(bp_min),
+      " e ", p_inline(white_min), "). Por isso, a tabela reporta erros-padrão robustos HC1: a correção altera a inferência, não os coeficientes MQO. ",
+      "Heterocedasticidade invalida erros-padrão usuais, mas não torna os coeficientes viesados se a hipótese de média condicional zero for plausível. O VIF máximo no modelo ampliado é ",
+      fmt_num(max_vif_m3, 2), ", sem evidência de multicolinearidade severa; resíduos versus ajustados e Cook foram verificados em \\texttt{output/diagnostics}. ",
+      "Jarque--Bera rejeita normalidade dos resíduos (menor ", p_inline(normality_min), "), mas esse é diagnóstico secundário diante do tamanho amostral."
     ),
-    "\\textbf{Conclusao.} Os resultados indicam associacoes condicionais pequenas entre maus habitos e peso, nao efeitos causais fortes. O modelo ampliado sugere que parte da correlacao simples era composicional. As principais limitacoes sao o desenho transversal, possiveis variaveis omitidas, aproximacoes em categorias de TV/refrigerante, ausencia de pesos amostrais no recorte recebido e medida de cigarro restrita a cigarros industrializados por dia.",
+    "\\textbf{Conclusão.} A evidência é compatível com associações condicionais pequenas entre maus hábitos e peso, mas não com uma leitura causal forte. A hipótese de média condicional zero pode falhar por simultaneidade, erro de medida nos hábitos e fatores omitidos como dieta total, renda permanente, saúde prévia e preferências. Assim, os resultados devem ser lidos como correlações parciais estimadas por MQO em corte transversal.",
     "\\end{document}"
   )
 
   writeLines(report, file.path(out_dir, "relatorio.tex"), useBytes = TRUE)
+  writeLines(report, file.path(out_dir, "relatorio_final.tex"), useBytes = TRUE)
 
   appendix <- c(
     "\\documentclass[10pt,a4paper]{article}",
@@ -378,7 +398,7 @@ write_latex_documents <- function(cleaned, metadata, descriptives, models, diagn
     "\\setlength{\\parskip}{4pt}",
     "\\newcommand{\\inputtable}[1]{\\IfFileExists{output/tables/#1}{\\input{output/tables/#1}}{\\input{../output/tables/#1}}}",
     "\\begin{document}",
-    "\\begin{center}\\textbf{Apendice: saidas do R usadas no relatorio}\\end{center}",
+    "\\begin{center}\\textbf{Apêndice: saídas do R usadas no relatório}\\end{center}",
     "\\inputtable{variaveis_usadas.tex}",
     "\\inputtable{auditoria_limpeza.tex}",
     "\\inputtable{descritivas_status_fumante.tex}",
@@ -391,4 +411,37 @@ write_latex_documents <- function(cleaned, metadata, descriptives, models, diagn
   )
 
   writeLines(appendix, file.path(out_dir, "apendice.tex"), useBytes = TRUE)
+  writeLines(appendix, file.path(out_dir, "apendice_outputs_R.tex"), useBytes = TRUE)
+}
+
+compile_latex_documents <- function(out_dir = "latex") {
+  pdflatex <- Sys.which("pdflatex")
+  if (!nzchar(pdflatex)) {
+    message("pdflatex não encontrado no PATH; arquivos .tex gerados, PDFs não compilados.")
+    return(invisible(FALSE))
+  }
+
+  docs <- c("relatorio_final.tex", "apendice_outputs_R.tex")
+  for (doc in docs) {
+    for (i in 1:2) {
+      result <- system2(
+        pdflatex,
+        args = c(
+          "-interaction=nonstopmode",
+          "-halt-on-error",
+          "-output-directory", out_dir,
+          file.path(out_dir, doc)
+        ),
+        stdout = TRUE,
+        stderr = TRUE
+      )
+      status <- attr(result, "status")
+      if (!is.null(status) && status != 0) {
+        writeLines(result)
+        stop("Falha ao compilar ", doc, call. = FALSE)
+      }
+    }
+  }
+
+  invisible(TRUE)
 }

@@ -6,7 +6,7 @@ ensure_project_dirs <- function(paths) {
 import_pns <- function(path, diagnostics_dir = file.path("output", "diagnostics")) {
   if (!file.exists(path)) {
     stop(
-      "Arquivo de dados nao encontrado: ", path,
+      "Arquivo de dados não encontrado: ", path,
       ". Coloque 'Dados pns 2013.dta' na raiz do projeto e rode source('main.R').",
       call. = FALSE
     )
@@ -129,10 +129,10 @@ clean_pns <- function(dados) {
           as_num(dados$c009) == 2 ~ "Preta",
           as_num(dados$c009) == 3 ~ "Amarela",
           as_num(dados$c009) == 4 ~ "Parda",
-          as_num(dados$c009) == 5 ~ "Indigena",
+          as_num(dados$c009) == 5 ~ "Indígena",
           TRUE ~ NA_character_
         ),
-        levels = c("Parda", "Branca", "Preta", "Amarela", "Indigena")
+        levels = c("Parda", "Branca", "Preta", "Amarela", "Indígena")
       )
     } else {
       factor(NA_character_)
@@ -143,7 +143,7 @@ clean_pns <- function(dados) {
           as_num(dados$c011) == 1 ~ "Casado",
           as_num(dados$c011) == 2 ~ "Separado",
           as_num(dados$c011) == 3 ~ "Divorciado",
-          as_num(dados$c011) == 4 ~ "Viuvo",
+          as_num(dados$c011) == 4 ~ "Viúvo",
           as_num(dados$c011) == 5 ~ "Solteiro",
           TRUE ~ NA_character_
         )
@@ -152,7 +152,7 @@ clean_pns <- function(dados) {
       factor(NA_character_)
     },
     alfabetizado = if ("d001" %in% names(dados)) {
-      factor(dplyr::case_when(as_num(dados$d001) == 1 ~ "Sim", as_num(dados$d001) == 2 ~ "Nao", TRUE ~ NA_character_))
+      factor(dplyr::case_when(as_num(dados$d001) == 1 ~ "Sim", as_num(dados$d001) == 2 ~ "Não", TRUE ~ NA_character_))
     } else {
       factor(NA_character_)
     },
@@ -165,12 +165,12 @@ clean_pns <- function(dados) {
     status_codigo = valid_integer_set(dados$p050, 1:3),
     status_fumante = factor(
       dplyr::case_when(
-        status_codigo == 1 ~ "Fumante diario",
+        status_codigo == 1 ~ "Fumante diário",
         status_codigo == 2 ~ "Fumante ocasional",
-        status_codigo == 3 ~ "Nao fumante",
+        status_codigo == 3 ~ "Não fumante",
         TRUE ~ NA_character_
       ),
-      levels = c("Fumante diario", "Fumante ocasional", "Nao fumante")
+      levels = c("Fumante diário", "Fumante ocasional", "Não fumante")
     ),
     cigarro_reportado = valid_between(dados$p05402, 0, 100),
     cigarro = dplyr::case_when(
@@ -220,22 +220,22 @@ clean_pns <- function(dados) {
     )
   }
 
-  add_step(!is.na(peso_gramas), "Peso valido", "w00103 entre 30 e 200 kg; convertido para gramas")
-  add_step(!is.na(TV), "TV valida", "p045 em 1--8; faixas convertidas em horas aproximadas")
-  add_step(!is.na(status_fumante), "Status de fumante valido", "p050 em 1--3")
-  add_step(!is.na(cigarro), "Cigarro valido", "nao fumantes recebem 0; fumantes precisam de p05402 valido")
+  add_step(!is.na(peso_gramas), "Peso válido", "w00103 entre 30 e 200 kg; convertido para gramas")
+  add_step(!is.na(TV), "TV válida", "p045 em 1--8; faixas convertidas em horas aproximadas")
+  add_step(!is.na(status_fumante), "Status de fumante válido", "p050 em 1--3")
+  add_step(!is.na(cigarro), "Cigarro válido", "não fumantes recebem 0; fumantes precisam de p05402 válido")
   core_data <- current
 
   if (has_refrigerante) {
-    add_step(!is.na(refrigerante), "Refrigerante valido", "p020 e p022 combinados em copos por semana; p020=0 recebe 0")
+    add_step(!is.na(refrigerante), "Refrigerante válido", "p020 e p022 combinados em copos por semana; p020=0 recebe 0")
   }
-  add_step(!is.na(idade), "Idade adulta valida", "c008 entre 18 e 109 anos")
-  add_step(!is.na(altura_cm), "Altura valida", "w00203 entre 120 e 210 cm")
-  add_step(!is.na(sexo), "Sexo valido", "c006 em 1--2")
-  add_step(!is.na(cor_raca), "Cor/raca valida", "c009 em 1--5; codigo ignorado removido")
-  add_step(!is.na(estado_civil), "Estado civil valido", "c011 em 1--5")
-  add_step(!is.na(alfabetizado), "Alfabetizacao valida", "d001 em 1--2")
-  add_step(!is.na(regiao) & !is.na(tamanho_dom), "Regiao e domicilio validos", "UF convertida em regiao; total de moradores entre 1 e 30")
+  add_step(!is.na(idade), "Idade adulta válida", "c008 entre 18 e 109 anos")
+  add_step(!is.na(altura_cm), "Altura válida", "w00203 entre 120 e 210 cm")
+  add_step(!is.na(sexo), "Sexo válido", "c006 em 1--2")
+  add_step(!is.na(cor_raca), "Cor/raça válida", "c009 em 1--5; código ignorado removido")
+  add_step(!is.na(estado_civil), "Estado civil válido", "c011 em 1--5")
+  add_step(!is.na(alfabetizado), "Alfabetização válida", "d001 em 1--2")
+  add_step(!is.na(regiao) & !is.na(tamanho_dom), "Região e domicílio válidos", "UF convertida em região; total de moradores entre 1 e 30")
 
   final_data <- current |>
     dplyr::mutate(
@@ -246,9 +246,9 @@ clean_pns <- function(dados) {
   variable_availability <- dplyr::tibble(
     item = c(
       "Peso medido", "TV", "Cigarros por dia", "Status de fumante",
-      "Refrigerante", "Altura", "Idade", "Sexo", "Cor/raca",
-      "Estado civil", "Alfabetizacao", "Regiao", "Tamanho do domicilio",
-      "Escolaridade detalhada", "Renda", "Atividade fisica", "Alcool", "Estado de saude"
+      "Refrigerante", "Altura", "Idade", "Sexo", "Cor/raça",
+      "Estado civil", "Alfabetização", "Região", "Tamanho do domicílio",
+      "Escolaridade detalhada", "Renda", "Atividade física", "Álcool", "Estado de saúde"
     ),
     codigo_usado = c(
       "w00103", "p045", "p05402", "p050", "p020+p022", "w00203",
@@ -256,28 +256,28 @@ clean_pns <- function(dados) {
       NA, NA, NA, NA, NA
     ),
     status = c(
-      rep("Disponivel e usada", 13),
-      rep("Nao disponivel no .dta recebido", 5)
+      rep("Disponível e usada", 13),
+      rep("Não disponível no .dta recebido", 5)
     ),
     tratamento = c(
-      "kg validos em 30--200; peso_gramas=w00103*1000; log_peso=log(peso_gramas)",
+      "kg válidos em 30--200; peso_gramas=w00103*1000; log_peso=log(peso_gramas)",
       "faixas recodificadas em horas: 0, 0,5, 1,5, ..., 6,5",
-      "p05402 valido para fumantes; nao fumantes recebem zero",
-      "1 diario, 2 ocasional, 3 nao fumante",
+      "p05402 válido para fumantes; não fumantes recebem zero",
+      "1 diário, 2 ocasional, 3 não fumante",
       "p020 dias/semana * p022 copos/dia; categoria 3 tratada como 3+ no limite inferior",
-      "cm validos em 120--210",
+      "cm válidos em 120--210",
       "adultos 18--109",
       "fator Homem/Mulher",
       "fator; codigo 9 ignorado removido",
       "fator com cinco categorias",
-      "proxy educacional binaria: sabe ler/escrever",
-      "UF agregada em cinco regioes",
-      "controle para composicao domiciliar",
-      "o recorte da base nao contem VDD004 nem anos de estudo",
-      "o recorte da base nao contem renda",
-      "o recorte da base nao contem P034/P035 ou medidas equivalentes",
-      "o recorte da base nao contem P027/P028",
-      "o recorte da base nao contem N001 ou medida equivalente"
+      "proxy educacional binária: sabe ler/escrever",
+      "UF agregada em cinco regiões",
+      "controle para composição domiciliar",
+      "o recorte da base não contém VDD004 nem anos de estudo",
+      "o recorte da base não contém renda",
+      "o recorte da base não contém P034/P035 ou medidas equivalentes",
+      "o recorte da base não contém P027/P028",
+      "o recorte da base não contém N001 ou medida equivalente"
     )
   )
 

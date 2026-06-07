@@ -9,15 +9,25 @@
 \captionsetup{font=small,labelfont=bf}
 \newcommand{\inputtable}[1]{\IfFileExists{output/tables/#1}{\input{output/tables/#1}}{\input{../output/tables/#1}}}
 \begin{document}
-\small
+
 \begin{center}\textbf{Maus hábitos e peso corporal na PNS 2013}\end{center}
+
 \textbf{Introdução.} Este relatório avalia se três hábitos de risco -- assistir televisão, fumar cigarros e consumir refrigerante ou suco artificial -- estão associados ao peso dos indivíduos na PNS 2013/IBGE. A pergunta é descritiva e econométrica, não causal: os coeficientes abaixo devem ser lidos como correlações parciais condicionais às variáveis observadas.
+
 \textbf{Dados e tratamento.} A base recebida contém 56.794 observações válidas após a limpeza comum. O peso final medido (w00103) foi convertido em gramas; TV (p045) foi transformada nos pontos médios das faixas; cigarros/dia combina status de fumante (p050) e quantidade diária (p05402), com zero para não fumantes; refrigerante é p020$\times$p022, em copos por semana. Códigos não aplicáveis, ignorados e valores fora dos intervalos do dicionário foram tratados como ausentes. Como renda, atividade física, álcool, estado de saúde e escolaridade detalhada não aparecem no recorte .dta, o modelo ampliado usa idade, sexo, altura, cor/raça, alfabetização, estado civil, região e tamanho do domicílio.
+
 \textbf{Descritivas.} A Tabela \ref{tab:descritivas} sugere diferenças brutas pequenas no peso: não fumantes pesam em média 70,7 kg, contra 69,8 kg entre fumantes diários e 69,4 kg entre ocasionais. Fumantes diários assistem mais TV (2,65 h/dia) e fumam 13,51 cigarros/dia; os não fumantes têm cigarro igual a zero por construção. Essas médias ainda misturam hábitos, idade, altura e composição demográfica.
+
 \inputtable{descritivas_status_fumante.tex}
+
 \textbf{Estratégia empírica.} Em MQO múltiplo, cada coeficiente estimado é interpretado como variação parcial em $E(peso\mid X)$, mantidas constantes as demais variáveis observadas. Estimo três especificações: um modelo em nível com os três hábitos; uma versão log com $\log(peso)$ e $\log(1+cigarro)$, adequada porque muitos indivíduos não fumam; e um modelo log ampliado com controles. Esses controles reduzem viés de variável omitida observável porque peso e hábitos variam sistematicamente com ciclo de vida, sexo, altura, composição familiar e localização.
+
 \inputtable{regressoes_principais.tex}
+
 \textbf{Resultados.} No modelo em nível, uma hora adicional de TV está associada a 184 g no peso ($p<0{,}001$); um cigarro/dia adicional a -24 g ($p=0{,}075$, evidência apenas marginal a 10%); e um copo semanal adicional de refrigerante a 205 g ($p<0{,}001$). O ajuste permanece muito baixo (R$^2$=0,006), indicando que hábitos isolados explicam fração pequena da heterogeneidade de peso; a precisão estatística não implica grande relevância econômica. No modelo log, os coeficientes de TV e refrigerante são semielasticidades: TV implica cerca de 0,21\% no peso por hora; $\log(1+cigarro)$ tem coeficiente -0,0053, uma elasticidade em relação a $1+cigarro$; e refrigerante 0,280\% por copo/semana; os três coeficientes têm $p<0{,}001$. Com controles, TV fica em 0,69\% por hora ($p<0{,}001$), $\log(1+cigarro)$ em -0,0199 ($p<0{,}001$) e refrigerante em 0,113\% por copo/semana ($p<0{,}001$). O R$^2$ ajustado sobe de 0,006 para 0,302, evidência de que altura e controles demográficos absorvem parte relevante da variação de peso.
+
 \textbf{Diagnóstico.} Breusch--Pagan e White rejeitam a hipótese nula de homocedasticidade (menores $p<0{,}001$ e $p<0{,}001$). Por isso, a tabela reporta erros-padrão robustos HC1: a correção altera a inferência, não os coeficientes MQO. Heterocedasticidade invalida erros-padrão usuais, mas não torna os coeficientes viesados se a hipótese de média condicional zero for plausível. O VIF máximo no modelo ampliado é 2,05, sem evidência de multicolinearidade severa; resíduos versus ajustados e Cook foram verificados em \texttt{output/diagnostics}. Jarque--Bera rejeita normalidade dos resíduos (menor $p<0{,}001$), mas esse é diagnóstico secundário diante do tamanho amostral.
+
 \textbf{Conclusão.} A evidência é compatível com associações condicionais pequenas entre maus hábitos e peso, mas não com uma leitura causal forte. A hipótese de média condicional zero pode falhar por simultaneidade, erro de medida nos hábitos e fatores omitidos como dieta total, renda permanente, saúde prévia e preferências. Assim, os resultados devem ser lidos como correlações parciais estimadas por MQO em corte transversal.
+
 \end{document}

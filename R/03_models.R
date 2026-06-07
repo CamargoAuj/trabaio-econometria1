@@ -1,8 +1,8 @@
 estimate_models <- function(data, out_dir = file.path("output", "models")) {
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
-  modelo_1 <- stats::lm(peso_gramas ~ TV + cigarro, data = data)
-  modelo_2 <- stats::lm(log_peso ~ TV + log_cigarro, data = data)
+  modelo_1 <- stats::lm(peso_gramas ~ TV + cigarro + refrigerante, data = data)
+  modelo_2 <- stats::lm(log_peso ~ TV + log_cigarro + refrigerante, data = data)
   modelo_3 <- stats::lm(
     log_peso ~ TV + log_cigarro + refrigerante + idade_c + idade_c2 +
       altura_cm + sexo + cor_raca + alfabetizado + estado_civil +
@@ -11,7 +11,7 @@ estimate_models <- function(data, out_dir = file.path("output", "models")) {
   )
 
   models <- list(
-    "Modelo 1: nivel" = modelo_1,
+    "Modelo 1: nível" = modelo_1,
     "Modelo 2: log" = modelo_2,
     "Modelo 3: ampliado" = modelo_3
   )
@@ -44,7 +44,7 @@ estimate_models <- function(data, out_dir = file.path("output", "models")) {
     if (file.exists(path)) unlink(path, force = TRUE)
     ok <- file.rename(tmp, path)
     if (!ok) {
-      stop("Nao foi possivel gravar o arquivo: ", path, call. = FALSE)
+      stop("Não foi possível gravar o arquivo: ", path, call. = FALSE)
     }
   }
 
@@ -166,6 +166,11 @@ plot_cooks <- function(model, name, out_dir) {
 
 run_model_diagnostics <- function(model_objects, out_dir = file.path("output", "diagnostics")) {
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+  unlink(Sys.glob(file.path(out_dir, "top_cooks_*.csv")), force = TRUE)
+  unlink(Sys.glob(file.path(out_dir, "residuos_ajustados_modelo*.png")), force = TRUE)
+  unlink(Sys.glob(file.path(out_dir, "cooks_distance_modelo*.png")), force = TRUE)
+  unlink(file.path(out_dir, "normalidade_residuos.csv"), force = TRUE)
+
   models <- model_objects$models
   simple_names <- paste0("modelo", seq_along(models))
 
