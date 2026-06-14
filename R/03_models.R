@@ -174,23 +174,6 @@ run_model_diagnostics <- function(model_objects, out_dir = file.path("output", "
   models <- model_objects$models
   simple_names <- paste0("modelo", seq_along(models))
 
-  bp <- Map(
-    function(model, label) {
-      test <- lmtest::bptest(model)
-      data.frame(
-        modelo = label,
-        teste = "Breusch-Pagan",
-        estatistica = unname(test$statistic),
-        gl = unname(test$parameter),
-        p_valor = test$p.value,
-        row.names = NULL
-      )
-    },
-    models,
-    names(models)
-  ) |>
-    dplyr::bind_rows()
-
   white <- Map(
     function(model, label) {
       test <- white_test_fitted(model)
@@ -255,14 +238,12 @@ run_model_diagnostics <- function(model_objects, out_dir = file.path("output", "
   invisible(Map(plot_residuals, models, simple_names, MoreArgs = list(out_dir = out_dir)))
   invisible(Map(plot_cooks, models, simple_names, MoreArgs = list(out_dir = out_dir)))
 
-  readr::write_csv(bp, file.path(out_dir, "breusch_pagan.csv"))
   readr::write_csv(white, file.path(out_dir, "white_fitted.csv"))
   readr::write_csv(vif, file.path(out_dir, "vif.csv"))
   readr::write_csv(influence, file.path(out_dir, "influencia_cook.csv"))
   readr::write_csv(normality, file.path(out_dir, "normalidade_residuos.csv"))
 
   list(
-    bp = bp,
     white = white,
     vif = vif,
     influence = influence,
