@@ -308,7 +308,7 @@ write_latex_documents <- function(cleaned, metadata, descriptives, models, diagn
   g2 <- model_glance(models$models[[2]])
   g3 <- model_glance(models$models[[3]])
 
-  bp_min <- min(diagnostics$bp$p_valor, na.rm = TRUE)
+  # Apenas White agora
   white_min <- min(diagnostics$white$p_valor, na.rm = TRUE)
   normality_min <- min(diagnostics$normality$p_valor, na.rm = TRUE)
   max_vif_m3 <- diagnostics$vif |>
@@ -321,72 +321,104 @@ write_latex_documents <- function(cleaned, metadata, descriptives, models, diagn
     "\\usepackage[utf8]{inputenc}",
     "\\usepackage[T1]{fontenc}",
     "\\usepackage[brazil]{babel}",
-    "\\usepackage{geometry,booktabs,graphicx,caption,float,xcolor}",
-    "\\geometry{margin=1.25cm}",
+    "\\usepackage[a4paper,margin=1.75cm]{geometry}",
+    "\\usepackage{lmodern}",
+    "\\usepackage{microtype}",
+    "\\usepackage{amsmath,amssymb}",
+    "\\usepackage{booktabs,array,tabularx}",
+    "\\usepackage{caption,float}",
+    "\\usepackage{xcolor}",
+    "\\usepackage{enumitem}",
+    "\\usepackage{titlesec}",
+    "\\usepackage{hyperref}",
+    "",
+    "\\definecolor{SafraBlue}{HTML}{17324D}",
+    "\\definecolor{SoftGray}{HTML}{F4F6F8}",
+    "\\definecolor{DarkGray}{HTML}{30343B}",
+    "",
+    "\\hypersetup{",
+    "    colorlinks=true,",
+    "    linkcolor=SafraBlue,",
+    "    urlcolor=SafraBlue,",
+    "    citecolor=SafraBlue,",
+    "    pdftitle={Maus hábitos e peso corporal na PNS 2013}",
+    "}",
+    "",
     "\\setlength{\\parindent}{0pt}",
-    "\\setlength{\\parskip}{2pt}",
-    "\\captionsetup{font=small,labelfont=bf}",
+    "\\setlength{\\parskip}{4pt}",
+    "\\captionsetup{font=small,labelfont=bf,justification=centering}",
+    "\\titleformat{\\section}{\\large\\bfseries\\color{SafraBlue}}{}{0pt}{}",
+    "\\renewcommand{\\arraystretch}{1.12}",
+    "",
     "\\newcommand{\\inputtable}[1]{\\IfFileExists{output/tables/#1}{\\input{output/tables/#1}}{\\input{../output/tables/#1}}}",
+    "",
     "\\begin{document}",
-    "\\small",
-    "\\begin{center}\\textbf{Maus hábitos e peso corporal na PNS 2013}\\end{center}",
+    "",
+    "\\begin{center}",
+    "    {\\Large\\bfseries\\color{SafraBlue} Maus hábitos e peso corporal na PNS 2013}\\par",
+    "    \\vspace{2pt}",
+    "    {\\normalsize Uma análise econométrica descritiva de corte transversal}\\par",
+    "\\end{center}",
+    "\\vspace{-2pt}",
+    "\\hrule",
+    "\\vspace{6pt}",
+    "",
+    "\\section{Introdução e Dados}",
     paste0(
-      "\\textbf{Introdução.} Este relatório avalia se três hábitos de risco -- assistir televisão, fumar cigarros e consumir refrigerante ou suco artificial -- estão associados ao peso dos indivíduos na PNS 2013/IBGE. ",
-      "A pergunta é descritiva e econométrica, não causal: os coeficientes abaixo devem ser lidos como correlações parciais condicionais às variáveis observadas."
+      "Este relatório avalia se três hábitos de risco -- assistir televisão, fumar cigarros e consumir refrigerante ou suco artificial -- estão associados ao peso dos indivíduos na PNS 2013. ",
+      "A pergunta é descritiva e econométrica, não causal. A base recebida contém ", format(nrow(models$data), big.mark = ".", decimal.mark = ","),
+      " observações válidas. O peso medido foi convertido em gramas; TV foi transformada nos pontos médios das faixas; ",
+      "cigarros/dia combina status de fumante e quantidade diária, com zero para não fumantes; refrigerante é medido em copos por semana. ",
+      "O modelo ampliado usa controles demográficos como idade, sexo, altura, cor/raça, alfabetização, estado civil, região e tamanho do domicílio."
     ),
+    "",
+    "\\section{Estatísticas Descritivas e Estratégia Empírica}",
     paste0(
-      "\\textbf{Dados e tratamento.} A base recebida contém ", format(nrow(models$data), big.mark = ".", decimal.mark = ","),
-      " observações válidas após a limpeza comum. O peso final medido (w00103) foi convertido em gramas; TV (p045) foi transformada nos pontos médios das faixas; ",
-      "cigarros/dia combina status de fumante (p050) e quantidade diária (p05402), com zero para não fumantes; refrigerante é p020$\\times$p022, em copos por semana. ",
-      "Códigos não aplicáveis, ignorados e valores fora dos intervalos do dicionário foram tratados como ausentes. ",
-      "Como renda, atividade física, álcool, estado de saúde e escolaridade detalhada não aparecem no recorte .dta, o modelo ampliado usa idade, sexo, altura, cor/raça, alfabetização, estado civil, região e tamanho do domicílio."
-    ),
-    paste0(
-      "\\textbf{Descritivas.} A Tabela \\ref{tab:descritivas} sugere diferenças brutas pequenas no peso: não fumantes pesam em média ",
+      "A Tabela \\ref{tab:descritivas} sugere diferenças brutas pequenas no peso: não fumantes pesam em média ",
       fmt_num(status_value("Não fumante", "peso_medio_kg"), 1), " kg, contra ",
-      fmt_num(status_value("Fumante diário", "peso_medio_kg"), 1), " kg entre fumantes diários e ",
-      fmt_num(status_value("Fumante ocasional", "peso_medio_kg"), 1), " kg entre ocasionais. ",
+      fmt_num(status_value("Fumante diário", "peso_medio_kg"), 1), " kg entre fumantes diários. ",
       "Fumantes diários assistem mais TV (", fmt_num(status_value("Fumante diário", "tv_media"), 2),
       " h/dia) e fumam ", fmt_num(status_value("Fumante diário", "cigarro_medio"), 2),
-      " cigarros/dia; os não fumantes têm cigarro igual a zero por construção. ",
-      "Essas médias ainda misturam hábitos, idade, altura e composição demográfica."
+      " cigarros/dia."
     ),
     "\\inputtable{descritivas_status_fumante.tex}",
     paste0(
-      "\\textbf{Estratégia empírica.} Em MQO múltiplo, cada coeficiente estimado é interpretado como variação parcial em $E(peso\\mid X)$, mantidas constantes as demais variáveis observadas. ",
-      "Estimo três especificações: um modelo em nível com os três hábitos; uma versão log com $\\log(peso)$ e $\\log(1+cigarro)$, adequada porque muitos indivíduos não fumam; ",
-      "e um modelo log ampliado com controles. Esses controles reduzem viés de variável omitida observável porque peso e hábitos variam sistematicamente com ciclo de vida, sexo, altura, composição familiar e localização."
+      "Em MQO múltiplo, foram estimadas três especificações: um modelo em nível com os três hábitos; uma versão log com $\\log(peso)$ e $\\log(1+cigarro)$; ",
+      "e um modelo log ampliado com controles para reduzir viés de variável omitida observável."
     ),
+    "",
+    "\\section{Resultados}",
     "\\inputtable{regressoes_principais.tex}",
     paste0(
-      "\\textbf{Resultados.} No modelo em nível, uma hora adicional de TV está associada a ",
+      "No modelo em nível, uma hora adicional de TV está associada a ",
       fmt_num(m1_tv$estimate, 0), " g no peso (", p_inline(m1_tv$p), "); um cigarro/dia adicional a ",
-      fmt_num(m1_cig$estimate, 0), " g (", p_inline(m1_cig$p), ", ", m1_cig_sig, "); e um copo semanal adicional de refrigerante a ",
-      fmt_num(m1_ref$estimate, 0), " g (", p_inline(m1_ref$p), "). O ajuste permanece muito baixo (R$^2$=",
-      fmt_num(g1$r2, 3), "), indicando que hábitos isolados explicam fração pequena da heterogeneidade de peso; a precisão estatística não implica grande relevância econômica. ",
-      "No modelo log, os coeficientes de TV e refrigerante são semielasticidades: TV implica cerca de ", fmt_num(100 * (exp(m2_tv$estimate) - 1), 2),
-      "\\% no peso por hora; $\\log(1+cigarro)$ tem coeficiente ", fmt_num(m2_cig$estimate, 4),
-      ", uma elasticidade em relação a $1+cigarro$; e refrigerante ", fmt_num(100 * (exp(m2_ref$estimate) - 1), 3), "\\% por copo/semana; os três coeficientes têm ", p_inline(m2_max_p), ". ",
-      "Com controles, TV fica em ", fmt_num(100 * (exp(m3_tv$estimate) - 1), 2), "\\% por hora (", p_inline(m3_tv$p),
+      fmt_num(m1_cig$estimate, 0), " g (", p_inline(m1_cig$p), ", ", m1_cig_sig, "); e um copo semanal de refrigerante a ",
+      fmt_num(m1_ref$estimate, 0), " g (", p_inline(m1_ref$p), "). O R$^2$ é baixo (",
+      fmt_num(g1$r2, 3), "). ",
+      "Com controles (Modelo 3), TV implica cerca de ", fmt_num(100 * (exp(m3_tv$estimate) - 1), 2), "\\% no peso por hora (", p_inline(m3_tv$p),
       "), $\\log(1+cigarro)$ em ", fmt_num(m3_cig$estimate, 4), " (", p_inline(m3_cig$p),
       ") e refrigerante em ", fmt_num(100 * (exp(m3_ref$estimate) - 1), 3), "\\% por copo/semana (", p_inline(m3_ref$p),
-      "). O R$^2$ ajustado sobe de ", fmt_num(g2$adj, 3), " para ", fmt_num(g3$adj, 3),
-      ", evidência de que altura e controles demográficos absorvem parte relevante da variação de peso."
+      "). O R$^2$ ajustado sobe para ", fmt_num(g3$adj, 3), "."
+    ),
+    "",
+    "\\section{Diagnóstico e Conclusão}",
+    paste0(
+      "O teste de White rejeita a hipótese nula de homocedasticidade (menor ", p_inline(white_min),
+      "). Por isso, a inferência utiliza erros-padrão robustos HC1. O VIF máximo no modelo ampliado é ",
+      fmt_num(max_vif_m3, 2), ", sem evidência de multicolinearidade severa. ",
+      "Jarque--Bera rejeita normalidade dos resíduos (menor ", p_inline(normality_min), "), esperado para $N$ elevado."
     ),
     paste0(
-      "\\textbf{Diagnóstico.} Breusch--Pagan e White rejeitam a hipótese nula de homocedasticidade (menores ", p_inline(bp_min),
-      " e ", p_inline(white_min), "). Por isso, a tabela reporta erros-padrão robustos HC1: a correção altera a inferência, não os coeficientes MQO. ",
-      "Heterocedasticidade invalida erros-padrão usuais, mas não torna os coeficientes viesados se a hipótese de média condicional zero for plausível. O VIF máximo no modelo ampliado é ",
-      fmt_num(max_vif_m3, 2), ", sem evidência de multicolinearidade severa; resíduos versus ajustados e Cook foram verificados em \\texttt{output/diagnostics}. ",
-      "Jarque--Bera rejeita normalidade dos resíduos (menor ", p_inline(normality_min), "), mas esse é diagnóstico secundário diante do tamanho amostral."
+      "\\textbf{Conclusão:} A evidência é compatível com associações condicionais pequenas entre os hábitos e o peso. ",
+      "A ausência de controles para dieta, atividade física e renda impede uma leitura causal, limitando a interpretação às correlações parciais estimadas por MQO."
     ),
-    "\\textbf{Conclusão.} A evidência é compatível com associações condicionais pequenas entre maus hábitos e peso, mas não com uma leitura causal forte. A hipótese de média condicional zero pode falhar por simultaneidade, erro de medida nos hábitos e fatores omitidos como dieta total, renda permanente, saúde prévia e preferências. Assim, os resultados devem ser lidos como correlações parciais estimadas por MQO em corte transversal.",
     "\\end{document}"
   )
 
   writeLines(report, file.path(out_dir, "relatorio.tex"), useBytes = TRUE)
   writeLines(report, file.path(out_dir, "relatorio_final.tex"), useBytes = TRUE)
 
+  # Apêndice mantido limpo com o layout padrão do R
   appendix <- c(
     "\\documentclass[10pt,a4paper]{article}",
     "\\usepackage[utf8]{inputenc}",
