@@ -160,7 +160,7 @@ write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostic
     notes = "Erros-padrão robustos HC1 entre parênteses."
   )
 
-  hetero <- dplyr::bind_rows(diagnostics$bp, diagnostics$white) |>
+  hetero <- diagnostics$white |>
     dplyr::mutate(
       decisao_5 = dplyr::if_else(p_valor < 0.05, "Rejeita homoced.", "Não rejeita"),
       estatistica = fmt_num(estatistica, 3),
@@ -179,7 +179,7 @@ write_all_tables <- function(cleaned, metadata, descriptives, models, diagnostic
   write_kable_latex(
     hetero,
     hetero_path,
-    caption = "Testes de heterocedasticidade",
+    caption = "Teste de White para heterocedasticidade",
     label = "hetero",
     digits = 3
   )
